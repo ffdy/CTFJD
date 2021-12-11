@@ -5,6 +5,9 @@ import Challenges from "@/views/Challenges";
 import Scoreboard from "@/views/Scoreboard";
 import Users from "@/views/Users";
 
+import Login from "@/views/Login";
+import Register from "@/views/Register";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -40,7 +43,17 @@ const routes = [
     path: '/scoreboard',
     name: 'scoreboard',
     component: Scoreboard
-  }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
 ]
 
 const router = new VueRouter({

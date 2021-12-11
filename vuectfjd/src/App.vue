@@ -24,15 +24,17 @@
               <el-dropdown style="height: 60px">
                 <i class="el-icon-setting" style="margin-left: 10px; "></i>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>查看</el-dropdown-item>
+                  <el-dropdown-item>Settings</el-dropdown-item>
                   <el-dropdown-item>Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
             <div v-else>
-              <el-button-group>
-                <el-button size="medium" plain>Register<i class="el-icon-plus"></i></el-button>
-                <el-button size="medium" plain>Login<i class="el-icon-user"></i></el-button>
+              <el-button-group router>
+<!--                <el-button size="medium" index="/register" plain>Register<i class="el-icon-plus"></i></el-button>-->
+<!--                <el-button size="medium" index="/login" plain>Login<i class="el-icon-user"></i></el-button>-->
+                <el-button size="medium" plain><el-link :underline="false" href="/register">Register<i class="el-icon-plus"></i></el-link></el-button>
+                <el-button size="medium" plain><el-link :underline="false" href="/login">Login<i class="el-icon-user"></i></el-link></el-button>
               </el-button-group>
             </div>
 
@@ -60,7 +62,7 @@ export default {
       address: '上海市普陀区金沙江路 1518 弄'
     };
     return {
-      login: 1,
+      login: 0,
       user: {
         id: 1,
         name: 'ffdy',
