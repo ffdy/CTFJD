@@ -21,11 +21,12 @@
           <el-col :span="8" style="text-align: right; font-size: 12px; border-bottom: solid 1px #e6e6e6">
             <div v-if="login">
               <span style="height: 60px">{{ user.name }}</span>
-              <el-dropdown style="height: 60px">
+              <el-dropdown style="height: 60px" @command="handleCommand">
                 <i class="el-icon-setting" style="margin-left: 10px; "></i>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>Settings</el-dropdown-item>
-                  <el-dropdown-item>Logout</el-dropdown-item>
+                  <el-dropdown-item command="/profile">Profile</el-dropdown-item>
+                  <el-dropdown-item command="/settings">Settings</el-dropdown-item>
+                  <el-dropdown-item command="logout">Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -56,24 +57,25 @@
 <script>
 export default {
   data() {
-    const item = {
-      date: '2016-05-02',
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄'
-    };
     return {
-      login: 0,
+      login: 1,
       user: {
         id: 1,
         name: 'ffdy',
       },
-      tableData: Array(20).fill(item),
       activeIndex: '1',
     }
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleCommand(command) {
+      this.$message('click on item ' + command);
+      if(command == 'logout') {
+        this.login = 0
+        this.$router.push("/")
+      //  logout
+      } else {
+        this.$router.push(command)
+      }
     }
   }
 };

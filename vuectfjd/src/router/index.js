@@ -7,6 +7,8 @@ import Users from "@/views/Users";
 
 import Login from "@/views/Login";
 import Register from "@/views/Register";
+import Profile from "@/views/Profile";
+import Settings from "@/views/Settings";
 
 Vue.use(VueRouter)
 
@@ -53,6 +55,16 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: Settings
   },
 ]
 
