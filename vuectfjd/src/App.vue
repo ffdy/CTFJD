@@ -7,14 +7,14 @@
                  background-color="#545c64">
         <el-row>
           <el-col :span=16>
-            <el-menu :default-active="activeIndex"
+            <el-menu :default-active="'/Home'"
                      class="el-menu-demo"
                      mode="horizontal"
-                     @select="handleSelect">
-              <el-menu-item index="1">CTFJD</el-menu-item>
-              <el-menu-item index="2">Users</el-menu-item>
-              <el-menu-item index="3">Scoreboard</el-menu-item>
-              <el-menu-item index="4">Challenges</el-menu-item>
+                     @select="handleSelect" router>
+              <el-menu-item index="/Home">CTFJD</el-menu-item>
+              <el-menu-item index="/users">Users</el-menu-item>
+              <el-menu-item index="/Scoreboard">Scoreboard</el-menu-item>
+              <el-menu-item index="/Challenges">Challenges</el-menu-item>
             </el-menu>
           </el-col>
 
@@ -25,8 +25,7 @@
                 <i class="el-icon-setting" style="margin-left: 10px; "></i>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>查看</el-dropdown-item>
-                  <el-dropdown-item>新增</el-dropdown-item>
-                  <el-dropdown-item>删除</el-dropdown-item>
+                  <el-dropdown-item>Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -43,14 +42,7 @@
       </el-header>
 
       <el-main>
-        <el-table :data="tableData">
-          <el-table-column prop="date" label="日期" width="140">
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="120">
-          </el-table-column>
-          <el-table-column prop="address" label="地址">
-          </el-table-column>
-        </el-table>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </div>
