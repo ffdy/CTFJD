@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -35,9 +36,25 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          const user = {
+            name: this.ruleForm.name,
+            password: this.ruleForm.pass
+          }
+          axios.post("http://localhost:8181/user/login", user).then(function (resp) {
+            console.log(resp)
+            if(resp.data != '') {
+              _this.$message("login success")
+              _this.$cookies.set("login", '1')
+              _this.$cookies.set("user", resp.data)
+              _this.$emit("getUserInfo", resp.data)
+              _this.$router.push("/")
+            } else {
+              _this.$message("用户名或密码错误")
+            }
+          })
         } else {
           console.log('error submit!!');
           return false;
