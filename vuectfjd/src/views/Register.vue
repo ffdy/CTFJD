@@ -87,9 +87,20 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          const user = {
+            name: this.ruleForm.name,
+            password: this.ruleForm.pass,
+            email: this.ruleForm.email
+          }
+          axios.post('http://localhost:8181/user/create', user).then(function (resp) {
+            _this.$message(resp.data)
+            if(resp.data==='创建成功') {
+              _this.$router.push("/login")
+            }
+          })
         } else {
           console.log('error submit!!');
           return false;
@@ -98,7 +109,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    }
+    },
   }
 }
 </script>
