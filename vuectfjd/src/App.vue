@@ -10,7 +10,8 @@
             <el-menu :default-active="'/Home'"
                      class="el-menu-demo"
                      mode="horizontal"
-                     @select="handleSelect" router>
+                     router>
+<!--                     @select="handleSelect" -->
               <el-menu-item index="/Home">CTFJD</el-menu-item>
               <el-menu-item index="/users">Users</el-menu-item>
               <el-menu-item index="/Scoreboard">Scoreboard</el-menu-item>
@@ -19,7 +20,7 @@
           </el-col>
 
           <el-col :span="8" style="text-align: right; font-size: 12px; border-bottom: solid 1px #e6e6e6">
-            <div v-if="login">
+            <div v-if="login==='1'">
               <span style="height: 60px">{{ user.name }}</span>
               <el-dropdown style="height: 60px" @command="handleCommand">
                 <i class="el-icon-setting" style="margin-left: 10px; "></i>
@@ -32,8 +33,6 @@
             </div>
             <div v-else>
               <el-button-group router>
-<!--                <el-button size="medium" index="/register" plain>Register<i class="el-icon-plus"></i></el-button>-->
-<!--                <el-button size="medium" index="/login" plain>Login<i class="el-icon-user"></i></el-button>-->
                 <el-button size="medium" plain><el-link :underline="false" href="/register">Register<i class="el-icon-plus"></i></el-link></el-button>
                 <el-button size="medium" plain><el-link :underline="false" href="/login">Login<i class="el-icon-user"></i></el-link></el-button>
               </el-button-group>
@@ -45,7 +44,7 @@
       </el-header>
 
       <el-main>
-        <router-view></router-view>
+        <router-view @getUserInfo="setUserInfo"></router-view>
       </el-main>
     </el-container>
   </div>
@@ -58,25 +57,31 @@
 export default {
   data() {
     return {
-      login: 1,
-      user: {
-        id: 1,
-        name: 'ffdy',
-      },
-      activeIndex: '1',
+      login: 0,
+      user: this.$cookies.get("user"),
     }
   },
   methods: {
     handleCommand(command) {
       this.$message('click on item ' + command);
-      if(command == 'logout') {
-        this.login = 0
-        this.$router.push("/")
-      //  logout
+      if(command === 'logout') {
+        this.$cookies.set("login", '0')
+        this.login = '0'
       } else {
         this.$router.push(command)
       }
+    },
+    setUserInfo(msg) {
+      this.login = this.$cookies.get("login")
+      this.user = this.$cookies.get("user")
     }
+  },
+  created() {
+    if(!this.$cookies.isKey("user")) {
+      this.$cookies.set("user", {name: 'CTFJD'})
+    }
+    this.login = this.$cookies.get("login")
+    this.user = this.$cookies.get("user")
   }
 };
 </script>
