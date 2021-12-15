@@ -1,9 +1,9 @@
 <template>
   <el-table
       :data="tableData.filter(data => !search
-      || data.place.toLowerCase().includes(search.toLowerCase())
-      || data.name.toLowerCase().includes(search.toLowerCase())
-      || data.email.toLowerCase().includes(search.toLowerCase()))"
+      || data.place.includes(search)
+      || data.name.includes(search)
+      || data.email.includes(search))"
       style="width: 100%">
     <el-table-column
         label="Name"
