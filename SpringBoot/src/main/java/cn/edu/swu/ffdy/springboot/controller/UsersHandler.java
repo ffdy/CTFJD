@@ -2,13 +2,16 @@ package cn.edu.swu.ffdy.springboot.controller;
 
 
 import cn.edu.swu.ffdy.springboot.entity.User;
-import cn.edu.swu.ffdy.springboot.entity.UserInfo;
+import cn.edu.swu.ffdy.springboot.utils.SessionContents;
+import cn.edu.swu.ffdy.springboot.utils.UserInfo;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.Optional;
 
@@ -24,9 +27,11 @@ public class UsersHandler {
     }
 
     @GetMapping("/findAll/{page}")
-    public Page<UserInfo> findAllUsers(@PathVariable("page")Integer page) {
-        PageRequest request = PageRequest.of(page, 10);
-        return usersRepository.findAllUserInfo(request);
+    public Page<UserInfo> findAllUsers(@PathVariable("page")Integer page, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        System.out.println(session.getAttribute("username"));
+        PageRequest pagerequest = PageRequest.of(page, 10);
+        return usersRepository.findAllUserInfo(pagerequest);
     }
 
     @PostMapping("/findByName")
@@ -75,10 +80,14 @@ public class UsersHandler {
     }
 
     @PostMapping("/login")
-    public UserInfo login(@RequestBody User user) {
+    public UserInfo login(@RequestBody User user, HttpServletRequest request) {
         User oldUser = usersRepository.findByName(user.getName());
         if(oldUser != null) {
             if(oldUser.getPassword().equals(user.getPassword())) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute(SessionContents.ID, oldUser.getId());
+                session.setAttribute(SessionContents.USER_NAME, oldUser.getName());
+                session.setAttribute(SessionContents.USER_TYPE, oldUser.getType());
                 return new UserInfo(oldUser.getName(), oldUser.getEmail());
             }
         }
