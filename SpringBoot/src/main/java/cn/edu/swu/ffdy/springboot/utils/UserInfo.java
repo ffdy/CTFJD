@@ -1,4 +1,4 @@
-package cn.edu.swu.ffdy.springboot.entity;
+package cn.edu.swu.ffdy.springboot.utils;
 
 import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.Getter;

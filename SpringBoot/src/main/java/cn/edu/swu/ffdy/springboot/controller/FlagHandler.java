@@ -2,21 +2,38 @@ package cn.edu.swu.ffdy.springboot.controller;
 
 import cn.edu.swu.ffdy.springboot.entity.Flag;
 import cn.edu.swu.ffdy.springboot.repository.FlagRepository;
+import cn.edu.swu.ffdy.springboot.repository.SolveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/flag")
 public class FlagHandler {
     @Autowired
     FlagRepository flagRepository;
+    @Autowired
+    SolveRepository solveRepository;
 
-    @GetMapping("/findAll")
-    public List<Flag> findAll() {
-        return flagRepository.findAll();
+    @PostMapping("/check/{challengeId}")
+    public String checkFlag(@PathVariable("challengeId") Integer id,
+                            @RequestBody String flag,
+                            HttpServletRequest request) {
+        Flag currentFlag = flagRepository.findByChallengeId(id);
+        try {
+            flag = URLDecoder.decode(flag, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if(currentFlag!=null && (currentFlag.getContent()+'=').equals(flag)) {
+            HttpSession session = request.getSession(true)
+            return "flag正确";
+        } else {
+            return "flag错误"+flag;
+        }
     }
 }
