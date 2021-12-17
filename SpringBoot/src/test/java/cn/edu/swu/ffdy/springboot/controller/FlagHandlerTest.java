@@ -15,8 +15,12 @@ class FlagHandlerTest {
 
     @Test
     public void check() {
-        int id=6;
-        Flag flag = flagRepository.findByChallengeId(id);
-        System.out.println(flag);
+//        int id=6;
+//        Flag flag = flagRepository.findByChallengeId(id);
+//        System.out.println(flag);
+        String flags = "asdfasdf";
+        System.out.println(flags);
+        flags = flags.substring(0,flags.length()-1);
+        System.out.println(flags);
     }
 }
