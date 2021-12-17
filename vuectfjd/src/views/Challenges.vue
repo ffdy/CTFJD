@@ -69,8 +69,8 @@ export default {
         axios.post("http://localhost:8181/flag/check/"+this.currentChallenge.id, this.flag).then(function (resp){
           console.log(resp)
           _this.$message(resp.data)
-          if(resp.data === "flag正确") {
-
+          if(resp.data === "correct") {
+            _this.$router.push("/challenges")
           }
         })
       } else {
