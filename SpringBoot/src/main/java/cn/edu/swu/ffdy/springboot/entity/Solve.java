@@ -13,8 +13,10 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 public class Solve {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer challenge_id;
-    private Integer user_id;
+
+    @Column(name="challenge_id")
+    private Integer challengeId;
+    @Column(name="user_id")
+    private Integer userId;
 }
