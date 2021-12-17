@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UsersRepository extends JpaRepository<User, Integer> {
-    @Query(value = "select new cn.edu.swu.ffdy.springboot.entity.UserInfo(u.name, u.email) from User u")
+    @Query(value = "select new cn.edu.swu.ffdy.springboot.utils.UserInfo(u.name, u.email) from User u")
     Page<UserInfo> findAllUserInfo(PageRequest pageRequest);
 
     User findByName(String name);
