@@ -2,7 +2,7 @@
   <div>
     <div align="center">
       <h1>{{user.name}}</h1>
-      <h2>300</h2>
+      <h2>{{user.score}}</h2>
     </div>
     <div style="width: 60%">
       <el-table
@@ -11,15 +11,15 @@
           style="width: 100%">
         <el-table-column
             label="Challenge"
-            prop="challenge">
+            prop="challengeId">
         </el-table-column>
         <el-table-column
             label="Submit Time"
-            prop="time">
+            prop="date">
         </el-table-column>
         <el-table-column
             label="Status"
-            prop="status">
+            prop="type">
         </el-table-column>
       </el-table>
     </div>
@@ -31,17 +31,20 @@ export default {
   data () {
     return {
       user: {
-        id: 1,
-        name: 'ffdy',
+        name: this.$cookies.get("user").name,
+        score: 0
       },
-      submit: [
-        {
-          challenge: 'challenge1',
-          status: 'Right',
-          time: '2021-12-11'
-        }
-      ],
+      submit: [],
     };
+  },
+  created() {
+    const _this = this
+    axios.get("http://localhost:8181/solve/myscore").then(function (resp) {
+      _this.user.score = resp.data
+    })
+    axios.get("http://localhost:8181/submission/mysubmission").then(function (resp) {
+      _this.submit = resp.data
+    })
   }
 }
 </script>
