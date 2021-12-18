@@ -93,4 +93,11 @@ public class UsersHandler {
         }
         return null;
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        session.invalidate();
+        return "success";
+    }
 }
