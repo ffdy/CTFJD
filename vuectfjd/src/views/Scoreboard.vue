@@ -1,21 +1,19 @@
 <template>
   <el-table
-      :data="tableData.filter(data => !search
-      || data.email.toLowerCase().includes(search.toLowerCase())
-      || data.name.toLowerCase().includes(search.toLowerCase()))"
+      :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%">
     <el-table-column
-        label="Place"
-        prop="place">
+        type="index"
+        width="100"
+        label="Place">
+    </el-table-column>
+    <el-table-column
+        label="Score"
+        prop="score">
     </el-table-column>
     <el-table-column
         label="Name"
-        prop="name">
-    </el-table-column>
-    <el-table-column
-        label="Email"
-        prop="email">
-
+        prop="username">
     </el-table-column>
     <el-table-column
         align="right">
@@ -33,29 +31,18 @@
 export default {
   data() {
     return {
-      tableData: [{
-        name: '王小虎',
-        email: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        email: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        email: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        email: '上海市普陀区金沙江路 1516 弄'
-      }],
+      tableData: [],
       search: ''
     }
   },
   methods: {
-    created() {
-
-    }
   },
+  created() {
+    const _this = this
+    axios.get("http://localhost:8181/solve/allscores").then(function (resp) {
+      console.log(resp)
+      _this.tableData = resp.data
+    })
+  }
 }
 </script>
