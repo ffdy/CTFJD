@@ -6,6 +6,9 @@ import cn.edu.swu.ffdy.springboot.repository.ChallengeRepository;
 import cn.edu.swu.ffdy.springboot.repository.SolveRepository;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +38,7 @@ public class SolveHandler {
     public Integer findMyScore(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         Integer userId = (Integer) session.getAttribute(SessionContents.ID);
-        if(userId == null)
+        if (userId == null)
             return null;
         return findByUserId(userId);
     }
@@ -47,10 +50,12 @@ public class SolveHandler {
         for (User user : users) {
             Integer score = findByUserId(user.getId());
             if (score != 0) {
-                userScores.add(new UserScore(user.getName(), score));
+                UserScore userScore = new UserScore(user.getName(), score);
+                System.out.println(userScore);
+                userScores.add(userScore);
             }
         }
-//        users.sort();
+        userScores.sort((o1, o2) -> o2.getScore().compareTo(o1.getScore()));
         return userScores;
     }
 
@@ -58,17 +63,22 @@ public class SolveHandler {
         Integer score = 0;
         List<Solve> solveList = solveRepository.findByUserId(userId);
         for (Solve solve : solveList) {
-            score += challengeRepository.findById(solve.getChallengeId()).get().getValue();
+            try {
+                score += challengeRepository.findById(solve.getChallengeId()).get().getValue();
+            } catch (Exception ignored) {
+            }
         }
         return score;
     }
 
+    @Getter
+    @Setter
+    @ToString
     private static class UserScore {
-        private Integer index;
         private final String username;
         private final Integer score;
 
-        public UserScore(String username, Integer score){
+        public UserScore(String username, Integer score) {
             this.username = username;
             this.score = score;
         }
