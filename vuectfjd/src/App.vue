@@ -11,7 +11,7 @@
                      class="el-menu-demo"
                      mode="horizontal"
                      router>
-<!--                     @select="handleSelect" -->
+              <!--                     @select="handleSelect" -->
               <el-menu-item index="/Home">CTFJD</el-menu-item>
               <el-menu-item index="/users">Users</el-menu-item>
               <el-menu-item index="/Scoreboard">Scoreboard</el-menu-item>
@@ -33,8 +33,12 @@
             </div>
             <div v-else>
               <el-button-group router>
-                <el-button size="medium" plain><el-link :underline="false" href="/register">Register<i class="el-icon-plus"></i></el-link></el-button>
-                <el-button size="medium" plain><el-link :underline="false" href="/login">Login<i class="el-icon-user"></i></el-link></el-button>
+                <el-button size="medium" plain>
+                  <el-link :underline="false" href="/register">Register<i class="el-icon-plus"></i></el-link>
+                </el-button>
+                <el-button size="medium" plain>
+                  <el-link :underline="false" href="/login">Login<i class="el-icon-user"></i></el-link>
+                </el-button>
               </el-button-group>
             </div>
 
@@ -64,9 +68,17 @@ export default {
   methods: {
     handleCommand(command) {
       this.$message('click on item ' + command);
-      if(command === 'logout') {
-        this.$cookies.set("login", '0')
-        this.login = '0'
+      const _this = this
+      if (command === 'logout') {
+        axios.get("http://localhost:8181/user/logout").then(function (resp) {
+          console.log(resp)
+          _this.$message("logout " + resp.data)
+          if(resp.data === "success") {
+            this.$cookies.set("login", '0')
+            this.login = '0'
+            this.$router.push("/")
+          }
+        })
       } else {
         this.$router.push(command)
       }
@@ -77,7 +89,7 @@ export default {
     }
   },
   created() {
-    if(!this.$cookies.isKey("user")) {
+    if (!this.$cookies.isKey("user")) {
       this.$cookies.set("user", {name: 'CTFJD'})
     }
     this.login = this.$cookies.get("login")
