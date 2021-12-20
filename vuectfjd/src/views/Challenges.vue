@@ -4,7 +4,7 @@
       <el-col :span="3" v-for="(o, index) in challenges" :key="index" :offset="index%6 >0 ? 1:0">
         <el-button type="primary"
                    style="width: 100%; height: 120px; margin-bottom: 10%"
-                   @click="dialogTableVisible = true;currentChallenge = o;flag = ''">
+                   @click="dialogTableVisible = true;currentChallenge = o;openChallenge">
           <h3>{{o.name}}</h3>
           <h3>{{o.value}}</h3>
           <h3>{{o.category}}</h3>
@@ -23,7 +23,7 @@
               </el-tab-pane>
               <el-tab-pane label="Solved" name="second">
                 <el-table
-                    :data="challenges"
+                    :data="solves"
                     height="300px"
                     style="width: 100%">
                   <el-table-column
@@ -31,8 +31,8 @@
                       prop="name">
                   </el-table-column>
                   <el-table-column
-                      label="Email"
-                      prop="email">
+                      label="Time"
+                      prop="time">
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
@@ -55,6 +55,7 @@ export default {
       activeName: 'first',
       dialogTableVisible: false,
       currentChallenge: {},
+      solves: {},
       flag: '',
     };
   },
@@ -64,7 +65,7 @@ export default {
     },
     submitFlag() {
       const _this = this
-      if(this.flag!='') {
+      if(this.flag!=='') {
         console.log(this.flag)
         axios.post("http://localhost:8181/flag/check/"+this.currentChallenge.id, this.flag).then(function (resp){
           console.log(resp)
@@ -78,8 +79,17 @@ export default {
       }
     },
     getChallengeStatus() {
+      // const _this = this
+    },
+    openChallenge(msg) {
+      // dialogTableVisible = true;currentChallenge = o;
+      console.log(msg)
+      this.flag = ''
       const _this = this
-      axios.get("http://localhost:8181/challenge")
+      axios.get("http://localhost:8181/solve/findSolves/"+this.currentChallenge.id).then(function (resp) {
+        console.log(resp)
+        _this.solves = resp.data
+      })
     }
   },
   created() {
