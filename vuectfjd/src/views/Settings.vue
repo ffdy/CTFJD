@@ -1,7 +1,7 @@
 <template>
   <div>
     <div align="center">
-      <h1>ffdy</h1>
+      <h1>修改个人信息</h1>
     </div>
     <div align="center" style="margin-top: 50px">
       <el-form style="width: 60%" status-icon :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -18,7 +18,7 @@
           <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">立即修改</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -51,7 +51,7 @@ export default {
     return {
       ruleForm: {
         name: '',
-        email: '',
+        email: this.$cookies.get("user").email,
         currentPass: '',
         pass: '',
         checkPass: '',
@@ -84,7 +84,7 @@ export default {
         callback();
       }
     };
-    var reValidatePass = (rule, value, callback) => {
+    var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'));
       } else if (value !== this.ruleForm.pass) {
@@ -98,7 +98,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          const userWithPass = {
+            email: this.ruleForm.email,
+            password: this.ruleForm.currentPass,
+            newPass: this.ruleForm.pass,
+          }
+          console.log(userWithPass)
+          axios.post("http://localhost:8181/user/edit", userWithPass).then(function (resp) {
+            console.log(resp)
+
+          })
         } else {
           console.log('error submit!!');
           return false;
