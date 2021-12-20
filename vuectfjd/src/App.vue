@@ -67,16 +67,15 @@ export default {
   },
   methods: {
     handleCommand(command) {
-      this.$message('click on item ' + command);
       const _this = this
       if (command === 'logout') {
         axios.get("http://localhost:8181/user/logout").then(function (resp) {
           console.log(resp)
           _this.$message("logout " + resp.data)
           if(resp.data === "success") {
-            this.$cookies.set("login", '0')
-            this.login = '0'
-            this.$router.push("/")
+            _this.$cookies.set("login", '0')
+            _this.login = '0'
+            _this.$router.push("/")
           }
         })
       } else {
