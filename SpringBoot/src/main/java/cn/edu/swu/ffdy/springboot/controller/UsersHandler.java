@@ -5,6 +5,10 @@ import cn.edu.swu.ffdy.springboot.entity.User;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
 import cn.edu.swu.ffdy.springboot.utils.UserInfo;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,22 +64,27 @@ public class UsersHandler {
     }
 
     @PostMapping("/edit")
-    public String editUser(@RequestBody User user, @RequestBody String newPass) {
-        User oldUser = usersRepository.findById(user.getId()).get();
+    public String editUser(@RequestBody UserWithPass userWithPass, HttpServletRequest request) {
+        System.out.println(userWithPass);
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionContents.ID);
+        if (userId == null) return "用户未登录";
+        User oldUser = usersRepository.findById(userId).get();
         if (oldUser != null) {
-            if (!user.getName().equals(oldUser.getName())
-                    || !user.getEmail().equals(oldUser.getEmail())
-                    || !user.getPassword().equals(oldUser.getPassword())) {
-                return "ERROR";
+            if (!userWithPass.getPassword().equals(oldUser.getPassword())) {
+                return "密码错误";
             }
-            user.setPassword(newPass);
-            if (usersRepository.save(user) != null) {
+            if (userWithPass.getEmail() !=null && userWithPass.getEmail()!="") {
+                oldUser.setPassword(userWithPass.getNewPass());
+            }
+            oldUser.setEmail(userWithPass.getEmail());
+            if (usersRepository.save(oldUser) != null) {
                 return "创建成功";
             } else {
                 return "创建失败";
             }
         } else {
-            return "ERROR";
+            return "不存在该用户";
         }
     }
 
@@ -99,5 +108,14 @@ public class UsersHandler {
         HttpSession session = request.getSession(true);
         session.invalidate();
         return "success";
+    }
+
+    @ToString
+    @Getter
+    @Setter
+    static private class UserWithPass{
+        private String email;
+        private String newPass;
+        private String password;
     }
 }
