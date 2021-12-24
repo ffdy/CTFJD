@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const userWithPass = {
@@ -103,13 +104,15 @@ export default {
             password: this.ruleForm.currentPass,
             newPass: this.ruleForm.pass,
           }
-          console.log(userWithPass)
           axios.post("http://localhost:8181/user/edit", userWithPass).then(function (resp) {
-            console.log(resp)
-
+            _this.$message(resp.data)
+            if(resp.data === 'success') {
+              _this.$cookies.set("login", '0');
+              _this.$emit("getUserInfo", resp.data)
+              _this.$router.push("/")
+            }
           })
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
