@@ -9,4 +9,5 @@ public interface SolveRepository extends JpaRepository<Solve, Integer> {
     Solve findByChallengeIdAndUserId(Integer ChallengeId, Integer userId);
 
     List<Solve> findByUserId(Integer userId);
+    List<Solve> findByChallengeId(Integer challengeid);
 }
