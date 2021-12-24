@@ -4,9 +4,3 @@
     <h3>展现你的实力吧</h3>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'Home',
-}
-</script>
