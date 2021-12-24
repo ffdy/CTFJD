@@ -11,7 +11,6 @@
                      class="el-menu-demo"
                      mode="horizontal"
                      router>
-              <!--                     @select="handleSelect" -->
               <el-menu-item index="/Home">CTFJD</el-menu-item>
               <el-menu-item index="/users">Users</el-menu-item>
               <el-menu-item index="/Scoreboard">Scoreboard</el-menu-item>
@@ -54,9 +53,6 @@
   </div>
 </template>
 
-<style>
-</style>
-
 <script>
 export default {
   data() {
@@ -70,7 +66,6 @@ export default {
       const _this = this
       if (command === 'logout') {
         axios.get("http://localhost:8181/user/logout").then(function (resp) {
-          console.log(resp)
           _this.$message("logout " + resp.data)
           if(resp.data === "success") {
             _this.$cookies.set("login", '0')
@@ -82,7 +77,7 @@ export default {
         this.$router.push(command)
       }
     },
-    setUserInfo(msg) {
+    setUserInfo() {
       this.login = this.$cookies.get("login")
       this.user = this.$cookies.get("user")
     }
