@@ -1,7 +1,9 @@
 package cn.edu.swu.ffdy.springboot.config;
 
+import cn.edu.swu.ffdy.springboot.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // 解决跨域问题
@@ -16,5 +18,11 @@ public class CrosConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .maxAge(3600)
                 .allowedHeaders("*");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
+        interceptorRegistry.addInterceptor(new LoginInterceptor())
+                .excludePathPatterns("/user/login", "/validate");
     }
 }
