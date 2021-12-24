@@ -6,11 +6,13 @@ import cn.edu.swu.ffdy.springboot.repository.ChallengeRepository;
 import cn.edu.swu.ffdy.springboot.repository.SolveRepository;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
+import cn.edu.swu.ffdy.springboot.utils.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,10 +73,21 @@ public class SolveHandler {
         return score;
     }
 
+    @GetMapping("/findbychallengeid/{challengeid}")
+    public List<UserInfo> findByChallengeId(@PathVariable("challengeid") Integer challengeId) {
+        List<Solve> solveList = solveRepository.findByChallengeId(challengeId);
+        List<UserInfo> userInfos = new ArrayList<>();
+        for(Solve solve : solveList) {
+            User user = usersRepository.findById(solve.getUserId()).get();
+            userInfos.add(new UserInfo(user.getName(), user.getEmail()));
+        }
+        return userInfos;
+    }
+
     @Getter
     @Setter
     @ToString
-    private static class UserScore {
+    private  class UserScore {
         private final String username;
         private final Integer score;
 
