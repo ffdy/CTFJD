@@ -1,12 +1,10 @@
 package cn.edu.swu.ffdy.springboot.controller;
 
-
 import cn.edu.swu.ffdy.springboot.entity.User;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
 import cn.edu.swu.ffdy.springboot.utils.UserInfo;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,14 +72,16 @@ public class UsersHandler {
             if (!userWithPass.getPassword().equals(oldUser.getPassword())) {
                 return "密码错误";
             }
-            if (userWithPass.getEmail() !=null && userWithPass.getEmail()!="") {
+            if (userWithPass.getEmail() != null && userWithPass.getEmail() != "") {
+                oldUser.setEmail(userWithPass.getEmail());
+            }
+            if (userWithPass.getNewPass() != null && userWithPass.getNewPass() != "") {
                 oldUser.setPassword(userWithPass.getNewPass());
             }
-            oldUser.setEmail(userWithPass.getEmail());
             if (usersRepository.save(oldUser) != null) {
-                return "创建成功";
+                return "success";
             } else {
-                return "创建失败";
+                return "修改失败";
             }
         } else {
             return "不存在该用户";
@@ -89,14 +89,20 @@ public class UsersHandler {
     }
 
     @PostMapping("/login")
-    public UserInfo login(@RequestBody User user, HttpServletRequest request) {
+    public UserInfo login(@RequestBody UserWithValidate user, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+
+        if(!(user.getValidate().equals(session.getAttribute(SessionContents.USER_VALIDATE_CODE)))) {
+            return null;
+        }
+
         User oldUser = usersRepository.findByName(user.getName());
         if (oldUser != null) {
             if (oldUser.getPassword().equals(user.getPassword())) {
-                HttpSession session = request.getSession(true);
                 session.setAttribute(SessionContents.ID, oldUser.getId());
                 session.setAttribute(SessionContents.USER_NAME, oldUser.getName());
                 session.setAttribute(SessionContents.USER_TYPE, oldUser.getType());
+                session.setAttribute(SessionContents.LOGIN_STATUS, Boolean.TRUE);
                 return new UserInfo(oldUser.getName(), oldUser.getEmail());
             }
         }
@@ -113,9 +119,18 @@ public class UsersHandler {
     @ToString
     @Getter
     @Setter
-    static private class UserWithPass{
+    static private class UserWithPass {
         private String email;
         private String newPass;
         private String password;
+    }
+
+    @ToString
+    @Getter
+    @Setter
+    static private class UserWithValidate {
+        private String name;
+        private String password;
+        private String validate;
     }
 }
