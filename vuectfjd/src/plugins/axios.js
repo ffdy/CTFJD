@@ -2,6 +2,8 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import {Message} from "element-ui";
+import router from "@/router";
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -35,6 +37,13 @@ _axios.interceptors.response.use(
   },
   function(error) {
     // Do something with response error
+    if(error.response.status === 401) {
+      Message.error({message: '请先登录'})
+      router.push('/login')
+    } else if(error.response.status === 403) {
+      Message.error({message: '没有权限'})
+      router.push('/home')
+    }
     return Promise.reject(error);
   }
 );
