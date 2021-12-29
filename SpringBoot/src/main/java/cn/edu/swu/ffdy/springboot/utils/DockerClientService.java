@@ -20,9 +20,6 @@ public class DockerClientService {
      */
     public static DockerClient connectDocker(){
         DockerClient dockerClient = DockerClientBuilder.getInstance("tcp://172.18.19.141:2375").build();
-        Info info = dockerClient.infoCmd().exec();
-        System.out.println("docker的环境信息如下：=================");
-        System.out.println(info);
         return dockerClient;
     }
 
@@ -30,9 +27,8 @@ public class DockerClientService {
      * 创建容器
      * @return
      */
-    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort) throws SocketException {
+    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port) throws SocketException {
         //映射端口8088—>80
-        int port = (new DatagramSocket(0)).getLocalPort();
         ExposedPort tcp80 = ExposedPort.tcp(redirectPort);
         Ports portBindings = new Ports();
         portBindings.bind(tcp80, Ports.Binding.bindPort(port));
@@ -55,7 +51,16 @@ public class DockerClientService {
     }
 
     /**
-     * 启动容器
+     * 重启容器
+     * @param containerId
+     */
+    public static void restartContainer(String containerId){
+        DockerClient client = connectDocker();
+        client.restartContainerCmd(containerId).exec();
+    }
+
+    /**
+     * 停止容器
      * @param containerId
      */
     public static void stopContainer(String containerId){
