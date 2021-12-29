@@ -2,6 +2,7 @@ package cn.edu.swu.ffdy.springboot.controller;
 
 import cn.edu.swu.ffdy.springboot.entity.User;
 import cn.edu.swu.ffdy.springboot.repository.UsersRepository;
+import cn.edu.swu.ffdy.springboot.utils.DockerClientService;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
 import cn.edu.swu.ffdy.springboot.utils.UserInfo;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -112,6 +114,11 @@ public class UsersHandler {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
+        String containerId = (String) session.getAttribute(SessionContents.DOCKER_ID);
+        if(containerId != null && containerId != "") {
+            DockerClientService.stopContainer(containerId);
+            DockerClientService.removeContainer(containerId);
+        }
         session.invalidate();
         return "success";
     }
