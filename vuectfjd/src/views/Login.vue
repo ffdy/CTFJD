@@ -29,7 +29,7 @@
 export default {
   data() {
     return {
-      validateUrl: 'http://localhost:8181/validate',
+      validateUrl: 'http://localhost:8181/api/validate',
       ruleForm: {
         name: '',
         pass: '',
@@ -59,7 +59,7 @@ export default {
             validate: this.ruleForm.validateCode
           }
           console.log(user)
-          axios.post("http://localhost:8181/user/login", user).then(function (resp) {
+          axios.post("/api/user/login", user).then(function (resp) {
             console.log(resp)
             if (resp.data != '') {
               _this.$message("login success")

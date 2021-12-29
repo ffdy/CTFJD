@@ -104,8 +104,9 @@ export default {
             password: this.ruleForm.currentPass,
             newPass: this.ruleForm.pass,
           }
-          axios.post("http://localhost:8181/user/edit", userWithPass).then(function (resp) {
+          axios.post("/api/user/edit", userWithPass).then(function (resp) {
             _this.$message(resp.data)
+            console.log(resp)
             if(resp.data === 'success') {
               _this.$cookies.set("login", '0');
               _this.$emit("getUserInfo", resp.data)

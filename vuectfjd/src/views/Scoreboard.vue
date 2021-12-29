@@ -40,7 +40,7 @@ export default {
   created() {
     const _this = this // 备份this指针
     // 使用axios对后端发起访问获取数据
-    axios.get("http://localhost:8181/solve/allscores").then(function (resp) {
+    axios.get("/api/solve/allscores").then(function (resp) {
       console.log(resp)
       _this.tableData = resp.data
     })

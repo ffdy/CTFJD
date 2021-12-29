@@ -39,7 +39,7 @@ export default {
   },
   created() {
     const _this = this
-    axios.get('http://localhost:8181/user/findAll/0').then(function (resp) {
+    axios.get('/api/user/findAll/0').then(function (resp) {
       console.log(resp.data.content)
       _this.tableData = resp.data.content
     })

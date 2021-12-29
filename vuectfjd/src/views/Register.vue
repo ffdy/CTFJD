@@ -95,7 +95,7 @@ export default {
             password: this.ruleForm.pass,
             email: this.ruleForm.email
           }
-          axios.post('http://localhost:8181/user/create', user).then(function (resp) {
+          axios.post('/api/user/create', user).then(function (resp) {
             _this.$message(resp.data)
             if(resp.data==='创建成功') {
               _this.$router.push("/login")

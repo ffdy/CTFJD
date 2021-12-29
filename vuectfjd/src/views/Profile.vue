@@ -39,10 +39,10 @@ export default {
   },
   created() {
     const _this = this
-    axios.get("http://localhost:8181/solve/myscore").then(function (resp) {
+    axios.get("/api/solve/myscore").then(function (resp) {
       _this.user.score = resp.data
     })
-    axios.get("http://localhost:8181/submission/mysubmission").then(function (resp) {
+    axios.get("/api/submission/mysubmission").then(function (resp) {
       _this.submit = resp.data
     })
   }

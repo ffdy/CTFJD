@@ -93,7 +93,7 @@ export default {
     submitFlag() {
       const _this = this
       if (this.flag !== '') {
-        axios.post("http://localhost:8181/flag/check/" + this.currentChallenge.id, this.flag).then(function (resp) {
+        axios.post("/api/flag/check/" + this.currentChallenge.id, this.flag).then(function (resp) {
           _this.$message(resp.data)
           if (resp.data === "correct") {
             _this.$router.push("/challenges")
@@ -109,10 +109,10 @@ export default {
       this.activeName = 'first'
       this.flag = ''
       const _this = this
-      axios.get("http://localhost:8181/solve/findbychallengeid/" + this.currentChallenge.id).then(function (resp) {
+      axios.get("/api/solve/findbychallengeid/" + this.currentChallenge.id).then(function (resp) {
         _this.solves = resp.data
       })
-      axios.get("http://localhost:8181/challengefile/getinfo/" + this.currentChallenge.id).then(function (resp) {
+      axios.get("/api/challengefile/getinfo/" + this.currentChallenge.id).then(function (resp) {
         _this.currentFile.id = _this.currentChallenge.id
         _this.currentFile.files = resp.data
       })
@@ -121,7 +121,7 @@ export default {
       this.currentImage.loading = true
       this.currentImage.id = this.currentChallenge.id
       const _this = this
-      axios.get("http://localhost:8181/docker/geturl/" + this.currentChallenge.id).then(function (resp) {
+      axios.get("/api/docker/geturl/" + this.currentChallenge.id).then(function (resp) {
         console.log(resp.data)
         _this.currentImage.loading = false;
         _this.currentImage.loaded = true;
@@ -131,7 +131,7 @@ export default {
     restartDockerImage() {
       this.currentImage.loading = true;
       const _this = this
-      axios.get("http://localhost:8181/docker/restart").then(function (resp) {
+      axios.get("/api/docker/restart").then(function (resp) {
         console.log(resp.data)
         _this.currentImage.loading = false;
       })
@@ -139,19 +139,19 @@ export default {
     stopDockerImage() {
       this.currentImage.loading = true;
       const _this = this
-      axios.get("http://localhost:8181/docker/stop").then(function (resp) {
+      axios.get("/api/docker/stop").then(function (resp) {
         console.log(resp.data)
         _this.currentImage.loaded = false;
         _this.currentImage.loading = false;
       })
     },
     downloadFile(file) {
-      window.location.href = "http://localhost:8181/challengefile/getfile/" + file.challengeId + "/" +file.name
+      window.location.href = "/api/challengefile/getfile/" + file.challengeId + "/" +file.name
     },
   },
   created() {
     const _this = this
-    axios.get("http://localhost:8181/challenge/findAll").then(function (resp) {
+    axios.get("/api/challenge/findAll").then(function (resp) {
       console.log(resp.data)
       _this.challenges = resp.data
     })
