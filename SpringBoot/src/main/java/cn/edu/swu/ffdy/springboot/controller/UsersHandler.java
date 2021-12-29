@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UsersHandler {
     @Autowired
     UsersRepository usersRepository;
@@ -65,10 +65,14 @@ public class UsersHandler {
 
     @PostMapping("/edit")
     public String editUser(@RequestBody UserWithPass userWithPass, HttpServletRequest request) {
-        System.out.println(userWithPass);
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
+        Boolean isLogin = (Boolean) session.getAttribute(SessionContents.LOGIN_STATUS);
+
+        if(isLogin == null || isLogin.equals(Boolean.FALSE)) {
+            return "用户未登录";
+        }
         Integer userId = (Integer) session.getAttribute(SessionContents.ID);
-        if (userId == null) return "用户未登录";
+        session.setAttribute(SessionContents.LOGIN_STATUS, null);
         User oldUser = usersRepository.findById(userId).get();
         if (oldUser != null) {
             if (!userWithPass.getPassword().equals(oldUser.getPassword())) {
