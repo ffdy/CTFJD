@@ -23,6 +23,10 @@ public class CrosConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(new LoginInterceptor())
-                .excludePathPatterns("/user/login", "/validate");
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/user/login", "/api/validate",
+                        "/", "/index.html", "/**/*.ico",
+                        "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
+                        "/**/*.jpeg", "/**/*.gif", "/**/fonts/*", "/**/*.svg");
     }
 }
