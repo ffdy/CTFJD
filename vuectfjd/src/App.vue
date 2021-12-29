@@ -32,11 +32,11 @@
             </div>
             <div v-else>
               <el-button-group router>
-                <el-button size="medium" plain>
-                  <el-link :underline="false" href="/register">Register<i class="el-icon-plus"></i></el-link>
+                <el-button size="medium" @click="$router.push('/register')" plain>
+                  Register<i class="el-icon-plus"></i>
                 </el-button>
-                <el-button size="medium" plain>
-                  <el-link :underline="false" href="/login">Login<i class="el-icon-user"></i></el-link>
+                <el-button size="medium" @click="$router.push('/login')" plain>
+                  Login<i class="el-icon-user"></i>
                 </el-button>
               </el-button-group>
             </div>
@@ -65,7 +65,7 @@ export default {
     handleCommand(command) {
       const _this = this
       if (command === 'logout') {
-        axios.get("http://localhost:8181/user/logout").then(function (resp) {
+        axios.get("/api/user/logout").then(function (resp) {
           _this.$message("logout " + resp.data)
           if(resp.data === "success") {
             _this.$cookies.set("login", '0')
