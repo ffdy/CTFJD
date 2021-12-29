@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
         Boolean isLogin = (Boolean) session.getAttribute(SessionContents.LOGIN_STATUS);
 
         if(isLogin == null || isLogin.equals(Boolean.FALSE)) {
