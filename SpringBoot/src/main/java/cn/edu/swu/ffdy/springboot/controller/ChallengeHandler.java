@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/challenge")
+@RequestMapping("/api/challenge")
 public class ChallengeHandler {
     @Autowired
     ChallengeRepository challengeRepository;

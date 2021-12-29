@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 @RestController
-@RequestMapping("/validate")
+@RequestMapping("/api/validate")
 public class ValidateCodeHandler {
     @GetMapping
     public void validate(HttpServletRequest request, HttpServletResponse response) {

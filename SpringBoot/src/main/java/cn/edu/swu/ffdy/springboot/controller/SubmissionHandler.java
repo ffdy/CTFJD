@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
-@RequestMapping("/submission")
+@RequestMapping("/api/submission")
 public class SubmissionHandler {
     @Autowired
     SubmissionRepository submissionRepository;

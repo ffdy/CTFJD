@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/challengefile")
+@RequestMapping("/api/challengefile")
 public class ChallengeFileHandler {
     private final static String basePath = "/home/ffdy/Downloads/uploads/";
 

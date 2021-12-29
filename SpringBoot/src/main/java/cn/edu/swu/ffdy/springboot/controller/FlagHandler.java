@@ -17,7 +17,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/flag")
+@RequestMapping("/api/flag")
 public class FlagHandler {
     @Autowired
     FlagRepository flagRepository;

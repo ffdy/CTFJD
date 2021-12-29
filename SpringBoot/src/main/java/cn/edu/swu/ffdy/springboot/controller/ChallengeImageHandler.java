@@ -18,7 +18,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 @RestController
-@RequestMapping("/docker")
+@RequestMapping("/api/docker")
 public class ChallengeImageHandler {
     @Autowired
     ChallengeImageRepository challengeImageRepository;

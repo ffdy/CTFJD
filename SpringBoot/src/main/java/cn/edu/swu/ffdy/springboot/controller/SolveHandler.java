@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/solve")
+@RequestMapping("/api/solve")
 public class SolveHandler {
     @Autowired
     SolveRepository solveRepository;
