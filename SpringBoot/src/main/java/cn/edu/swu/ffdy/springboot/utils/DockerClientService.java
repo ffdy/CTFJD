@@ -3,47 +3,70 @@ package cn.edu.swu.ffdy.springboot.utils;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.Ports;
-import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientImpl;
+import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
+import com.github.dockerjava.transport.DockerHttpClient;
 
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
 import java.net.SocketException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.dockerjava.api.model.HostConfig.newHostConfig;
 
 public class DockerClientService {
     /**
      * 连接docker服务器
-     * @return
      */
     public static DockerClient connectDocker(){
-        DockerClient dockerClient = DockerClientBuilder.getInstance("tcp://172.18.19.141:2375").build();
-        return dockerClient;
+        DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerTlsVerify(false)
+//                .withDockerHost("tcp://localhost:2375")
+                 .withDockerHost("unix://var/run/docker.sock")
+//                .withApiVersion("1.41")
+//                .withRegistryUrl("https://index.docker.io/v1/")
+                .build();
+
+        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+                .dockerHost(config.getDockerHost())
+                .sslConfig(config.getSSLConfig())
+                .maxConnections(100)
+                .connectionTimeout(Duration.ofSeconds(30))
+                .responseTimeout(Duration.ofSeconds(45))
+                .build();
+
+        return DockerClientImpl.getInstance(config, httpClient);
     }
 
     /**
      * 创建容器
-     * @return
      */
-    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port) throws SocketException {
-        //映射端口8088—>80
-        ExposedPort tcp80 = ExposedPort.tcp(redirectPort);
+    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port, List<String> env) throws SocketException {
+        ExposedPort exposedPort = ExposedPort.tcp(redirectPort);
         Ports portBindings = new Ports();
-        portBindings.bind(tcp80, Ports.Binding.bindPort(port));
+        portBindings.bind(exposedPort, Ports.Binding.bindPort(port));
 
         DockerClient client = connectDocker();
-        CreateContainerResponse container = client.createContainerCmd(imageName)
+        return client.createContainerCmd(imageName)
                 .withHostConfig(newHostConfig().withPortBindings(portBindings))
-                .withExposedPorts(tcp80).exec();
-        return container;
+                .withEnv(env)
+                .withExposedPorts(exposedPort).exec();
     }
 
+    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port, String env) throws SocketException {
+        List<String> envList = new ArrayList<>();
+        envList.add(env);
+        return createContainers(imageName, redirectPort, port, envList);
+    }
+
+    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port) throws SocketException {
+        return createContainers(imageName, redirectPort, port, (List<String>) null);
+    }
 
     /**
      * 启动容器
-     * @param containerId
      */
     public static void startContainer(String containerId){
         DockerClient client = connectDocker();
@@ -52,7 +75,6 @@ public class DockerClientService {
 
     /**
      * 重启容器
-     * @param containerId
      */
     public static void restartContainer(String containerId){
         DockerClient client = connectDocker();
@@ -61,7 +83,6 @@ public class DockerClientService {
 
     /**
      * 停止容器
-     * @param containerId
      */
     public static void stopContainer(String containerId){
         DockerClient client = connectDocker();
@@ -70,7 +91,6 @@ public class DockerClientService {
 
     /**
      * 删除容器
-     * @param containerId
      */
     public static void removeContainer(String containerId){
         DockerClient client = connectDocker();
