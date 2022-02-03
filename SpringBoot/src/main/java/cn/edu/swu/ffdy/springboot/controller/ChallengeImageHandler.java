@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.print.Doc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.DatagramSocket;
@@ -23,14 +22,11 @@ public class ChallengeImageHandler {
     @Autowired
     ChallengeImageRepository challengeImageRepository;
 
-    private final String dockerUrlHttp = "http://172.18.19.141:";
-    private final String dockerUrlDirect = "nc 172.18.19.141 ";
-
     @GetMapping("/geturl/{challengeId}")
     public String CreateImage(@PathVariable("challengeId") Integer challengeId, HttpServletRequest request) throws SocketException {
         HttpSession session = request.getSession(true);
         String containerId = (String) session.getAttribute(SessionContents.DOCKER_ID);
-        if(containerId != null && containerId != "") {
+        if(containerId != null && !containerId.equals("")) {
             DockerClientService.stopContainer(containerId);
             DockerClientService.removeContainer(containerId);
         }
@@ -46,8 +42,10 @@ public class ChallengeImageHandler {
         DockerClientService.startContainer(container.getId());
         session.setAttribute(SessionContents.DOCKER_ID, container.getId());
 //        session.setAttribute(SessionContents.DYNAMIC_FLAG, );
+        String dockerUrlDirect = "nc 172.18.19.141 ";
         if(challengeImage.getRedirectType().equals("direct"))
             return dockerUrlDirect + port;
+        String dockerUrlHttp = "http://172.18.19.141:";
         return dockerUrlHttp + port;
     }
 
