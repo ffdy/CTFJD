@@ -2,13 +2,11 @@ package cn.edu.swu.ffdy.springboot.utils;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.RestartContainerCmd;
 import org.junit.jupiter.api.Test;
 
-import javax.print.Doc;
 import java.net.SocketException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class DockerClientServiceTest {
     @Test
@@ -16,27 +14,25 @@ class DockerClientServiceTest {
         DockerClient client = DockerClientService.connectDocker();
         System.out.println(client.listImagesCmd().exec());
     }
-
+//
     @Test
     public void createImage() throws SocketException {
-        CreateContainerResponse image = DockerClientService.createContainers("swuctf/web1", 80, 5555);
+
+        CreateContainerResponse image = DockerClientService
+                .createContainers("mysql", 3306, 3307, "MYSQL_ROOT_PASSWORD=password");
         System.out.println(image);
         DockerClientService.startContainer(image.getId());
     }
 
     @Test
-    public void startImage() {
-        DockerClientService.startContainer("457a6d45377e");
-    }
-
-    @Test
-    public void restartImage() {
-        DockerClientService.restartContainer("cf2361abea82");
-    }
-
-    @Test
-    public void stopImage() {
-        DockerClientService.stopContainer("cf2361abea82");
-        DockerClientService.removeContainer("cf2361abea82");
+    public void createImageWithEnvList() throws SocketException {
+        List<String> envList = new ArrayList<>();
+        envList.add("MYSQL_ROOT_PASSWORD=password");
+        envList.add("FLAG=q1234567");
+        System.out.println(envList);
+        CreateContainerResponse image = DockerClientService
+                .createContainers("mysql", 3306, 3307, envList);
+        System.out.println(image);
+        DockerClientService.startContainer(image.getId());
     }
 }

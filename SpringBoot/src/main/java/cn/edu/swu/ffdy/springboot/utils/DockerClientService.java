@@ -43,16 +43,15 @@ public class DockerClientService {
     /**
      * 创建容器
      */
-    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port, List<String> env) throws SocketException {
+    public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port, List<String> envList) throws SocketException {
         ExposedPort exposedPort = ExposedPort.tcp(redirectPort);
         Ports portBindings = new Ports();
         portBindings.bind(exposedPort, Ports.Binding.bindPort(port));
 
-        DockerClient client = connectDocker();
-        return client.createContainerCmd(imageName)
+        return  connectDocker().createContainerCmd(imageName)
                 .withHostConfig(newHostConfig().withPortBindings(portBindings))
-                .withEnv(env)
-                .withExposedPorts(exposedPort).exec();
+                .withExposedPorts(exposedPort)
+                .withEnv(envList).exec();
     }
 
     public static CreateContainerResponse createContainers(String imageName, Integer redirectPort, Integer port, String env) throws SocketException {
