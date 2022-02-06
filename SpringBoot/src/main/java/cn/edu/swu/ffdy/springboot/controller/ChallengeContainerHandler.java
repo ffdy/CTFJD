@@ -1,6 +1,8 @@
 package cn.edu.swu.ffdy.springboot.controller;
 
+import cn.edu.swu.ffdy.springboot.entity.ChallengeContainer;
 import cn.edu.swu.ffdy.springboot.entity.ChallengeImage;
+import cn.edu.swu.ffdy.springboot.repository.ChallengeContainerRepository;
 import cn.edu.swu.ffdy.springboot.repository.ChallengeImageRepository;
 import cn.edu.swu.ffdy.springboot.utils.DockerClientService;
 import cn.edu.swu.ffdy.springboot.utils.SessionContents;
@@ -15,13 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/docker")
-public class ChallengeImageHandler {
+public class ChallengeContainerHandler {
     @Autowired
     ChallengeImageRepository challengeImageRepository;
+    @Autowired
+    ChallengeContainerRepository challengeContainerRepository;
 
+    /**
+     * create and start container，build random flag and save to session
+     */
     @GetMapping("/geturl/{challengeId}")
     public String CreateImage(@PathVariable("challengeId") Integer challengeId, HttpServletRequest request) throws SocketException {
         HttpSession session = request.getSession(true);
@@ -29,19 +38,45 @@ public class ChallengeImageHandler {
         if(containerId != null && !containerId.equals("")) {
             DockerClientService.stopContainer(containerId);
             DockerClientService.removeContainer(containerId);
+
+            // docker container tracking
+            ChallengeContainer challengeContainer = challengeContainerRepository.findByContainerId(containerId);
+            challengeContainer.setTime(new Date());
+            challengeContainerRepository.save(challengeContainer);
         }
 
-        ChallengeImage challengeImage = challengeImageRepository.findById(challengeId).get();
+        ChallengeImage challengeImage = challengeImageRepository.findById(challengeId).orElse(null);
         Integer port = (Integer) session.getAttribute(SessionContents.EXPOSE_PORT);
         if(port == null || port == 0) {
             port = (new DatagramSocket(0)).getLocalPort();
             session.setAttribute(SessionContents.EXPOSE_PORT, port);
         }
 
-        CreateContainerResponse container = DockerClientService.createContainers(challengeImage.getDockerImage(), challengeImage.getRedirectPort(), port);
+        // random flag
+        String dynamicFlag = "flag{" + UUID.randomUUID() + "}";
+
+        assert challengeImage != null;
+        CreateContainerResponse container =
+                DockerClientService.createContainers(
+                        challengeImage.getDockerImage(),
+                        challengeImage.getRedirectPort(),
+                        port,
+                        "FLAG=" + dynamicFlag
+                );
         DockerClientService.startContainer(container.getId());
         session.setAttribute(SessionContents.DOCKER_ID, container.getId());
-//        session.setAttribute(SessionContents.DYNAMIC_FLAG, );
+        session.setAttribute(SessionContents.DYNAMIC_FLAG, dynamicFlag);
+
+        // docker container tracking
+        ChallengeContainer challengeContainer = new ChallengeContainer();
+        challengeContainer.setChallengeId(challengeId);
+        challengeContainer.setFlag(dynamicFlag);
+        challengeContainer.setStatus("Running");
+        challengeContainer.setTime(new Date());
+        challengeContainer.setUsername((String) session.getAttribute(SessionContents.USER_NAME));
+        challengeContainer.setContainerId(container.getId());
+        challengeContainerRepository.save(challengeContainer);
+
         String dockerUrlDirect = "nc 172.18.19.141 ";
         if(challengeImage.getRedirectType().equals("direct"))
             return dockerUrlDirect + port;
@@ -55,6 +90,12 @@ public class ChallengeImageHandler {
         String containerId = (String) session.getAttribute(SessionContents.DOCKER_ID);
         if(containerId != null) {
             DockerClientService.restartContainer(containerId);
+
+            // docker container tracking
+            ChallengeContainer challengeContainer = challengeContainerRepository.findByContainerId(containerId);
+            challengeContainer.setTime(new Date());
+            challengeContainerRepository.save(challengeContainer);
+
             return "success";
         }
         return "fail";
@@ -68,6 +109,12 @@ public class ChallengeImageHandler {
             DockerClientService.stopContainer(containerId);
             DockerClientService.removeContainer(containerId);
             session.setAttribute(SessionContents.DOCKER_ID, null);
+
+            // docker container tracking
+            ChallengeContainer challengeContainer = challengeContainerRepository.findByContainerId(containerId);
+            challengeContainer.setStatus("Destroyed");
+            challengeContainerRepository.save(challengeContainer);
+
             return "success";
         }
         return "fail";
