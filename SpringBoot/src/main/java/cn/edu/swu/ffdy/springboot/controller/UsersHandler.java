@@ -76,15 +76,15 @@ public class UsersHandler {
         }
         Integer userId = (Integer) session.getAttribute(SessionContents.ID);
         session.setAttribute(SessionContents.LOGIN_STATUS, null);
-        User oldUser = usersRepository.findById(userId).get();
+        User oldUser = usersRepository.findById(userId).orElse(null);
         if (oldUser != null) {
             if (!userWithPass.getPassword().equals(oldUser.getPassword())) {
                 return "密码错误";
             }
-            if (userWithPass.getEmail() != null && userWithPass.getEmail() != "") {
+            if (userWithPass.getEmail() != null && !userWithPass.getEmail().equals("")) {
                 oldUser.setEmail(userWithPass.getEmail());
             }
-            if (userWithPass.getNewPass() != null && userWithPass.getNewPass() != "") {
+            if (userWithPass.getNewPass() != null && !userWithPass.getNewPass().equals("")) {
                 oldUser.setPassword(userWithPass.getNewPass());
             }
             if (usersRepository.save(oldUser) != null) {
@@ -122,7 +122,7 @@ public class UsersHandler {
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         String containerId = (String) session.getAttribute(SessionContents.DOCKER_ID);
-        if(containerId != null && containerId != "") {
+        if(containerId != null && !containerId.equals("")) {
             DockerClientService.stopContainer(containerId);
             DockerClientService.removeContainer(containerId);
         }
