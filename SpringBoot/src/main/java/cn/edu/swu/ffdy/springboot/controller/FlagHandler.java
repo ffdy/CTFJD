@@ -19,12 +19,16 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/flag")
 public class FlagHandler {
-    @Autowired
     FlagRepository flagRepository;
-    @Autowired
     SolveRepository solveRepository;
-    @Autowired
     SubmissionRepository submissionRepository;
+
+    @Autowired
+    FlagHandler(FlagRepository flagRepository, SolveRepository solveRepository, SubmissionRepository submissionRepository) {
+        this.flagRepository = flagRepository;
+        this.solveRepository = solveRepository;
+        this.submissionRepository = submissionRepository;
+    }
 
     @PostMapping("/check/{challengeId}")
     public String checkFlag(@PathVariable("challengeId") Integer id,

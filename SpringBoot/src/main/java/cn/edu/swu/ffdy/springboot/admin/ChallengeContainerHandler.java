@@ -14,10 +14,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/api/container")
 public class ChallengeContainerHandler {
-    @Autowired
+//    @Autowired
     ChallengeContainerRepository challengeContainerRepository;
 
-    @GetMapping("/allcontainers")
+    @Autowired
+    ChallengeContainerHandler(ChallengeContainerRepository challengeContainerRepository) {
+        this.challengeContainerRepository = challengeContainerRepository;
+    }
+
+    @GetMapping("/allContainers")
     public List<ChallengeContainer> getAllContainer() {
         List<ChallengeContainer> challengeContainerList = challengeContainerRepository.findAll();
         challengeContainerList.sort((o1, o2) -> o2.getTime().compareTo(o1.getTime()));
@@ -25,7 +30,7 @@ public class ChallengeContainerHandler {
     }
 
     @GetMapping("/restart/{containerId}")
-    public String restarContainer(@PathVariable("containerId") Integer id) {
+    public String restartContainer(@PathVariable("containerId") Integer id) {
         ChallengeContainer challengeContainer = challengeContainerRepository.findById(id).orElse(null);
 
         if(challengeContainer != null) {

@@ -24,12 +24,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/solve")
 public class SolveHandler {
-    @Autowired
     SolveRepository solveRepository;
-    @Autowired
     ChallengeRepository challengeRepository;
-    @Autowired
     UsersRepository usersRepository;
+
+    @Autowired
+    SolveHandler(SolveRepository solveRepository, ChallengeRepository challengeRepository, UsersRepository usersRepository) {
+        this.solveRepository = solveRepository;
+        this.challengeRepository = challengeRepository;
+        this.usersRepository = usersRepository;
+    }
 
     @GetMapping("/findAll")
     public List<Solve> findAll() {

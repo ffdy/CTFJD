@@ -12,8 +12,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/challenge")
 public class ChallengeHandler {
-    @Autowired
     ChallengeRepository challengeRepository;
+
+    @Autowired
+    ChallengeHandler(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
+    }
 
     @GetMapping("/findAll")
     public List<Challenge> findAll() {

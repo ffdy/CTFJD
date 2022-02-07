@@ -23,10 +23,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/docker")
 public class ChallengeContainerHandler {
-    @Autowired
     ChallengeImageRepository challengeImageRepository;
-    @Autowired
     ChallengeContainerRepository challengeContainerRepository;
+
+    @Autowired
+    ChallengeContainerHandler(ChallengeImageRepository challengeImageRepository, ChallengeContainerRepository challengeContainerRepository) {
+        this.challengeImageRepository = challengeImageRepository;
+        this.challengeContainerRepository = challengeContainerRepository;
+    }
 
     /**
      * create and start container，build random flag and save to session

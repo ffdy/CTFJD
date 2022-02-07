@@ -16,8 +16,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/submission")
 public class SubmissionHandler {
-    @Autowired
     SubmissionRepository submissionRepository;
+
+    @Autowired
+    SubmissionHandler(SubmissionRepository submissionRepository) {
+        this.submissionRepository = submissionRepository;
+    }
 
     @GetMapping("/findAll")
     public List<Submission> findAll() {

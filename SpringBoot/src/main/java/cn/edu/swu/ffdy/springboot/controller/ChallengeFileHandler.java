@@ -22,8 +22,12 @@ import java.util.List;
 public class ChallengeFileHandler {
     private final static String basePath = "/home/ffdy/Downloads/uploads/";
 
-    @Autowired
     ChallengeFileRepository challengeFileRepository;
+
+    @Autowired
+    ChallengeFileHandler(ChallengeFileRepository challengeFileRepository) {
+        this.challengeFileRepository = challengeFileRepository;
+    }
 
     @GetMapping("/findAll")
     public List<ChallengeFile> findAll() {

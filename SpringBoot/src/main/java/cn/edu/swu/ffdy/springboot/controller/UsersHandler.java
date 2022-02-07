@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -22,8 +21,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/user")
 public class UsersHandler {
-    @Autowired
     UsersRepository usersRepository;
+
+    @Autowired
+    UsersHandler(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 
     @PostMapping("/findById")
     public Optional<User> findByName(@RequestBody Integer id) {
