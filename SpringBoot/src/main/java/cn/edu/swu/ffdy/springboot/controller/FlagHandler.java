@@ -46,7 +46,9 @@ public class FlagHandler {
         String flagStatus;
 
         HttpSession session = request.getSession(true);
-        if(currentFlag!=null && currentFlag.getContent().equals(flag)) {
+        if(currentFlag != null && currentFlag.getContent().equals(flag)) {
+            flagStatus = "correct";
+        } else if (currentFlag == null && session.getAttribute(SessionContents.DYNAMIC_FLAG).equals(flag)) {
             flagStatus = "correct";
         } else {
             flagStatus = "incorrect";
