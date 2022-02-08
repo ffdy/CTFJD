@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "dynamic_docker_challenge")
+@Table(name = "challengeImages")
 @Entity
 @Setter
 @Getter
